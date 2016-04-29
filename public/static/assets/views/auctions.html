@@ -115,7 +115,6 @@
                 <hr class="hr-xs">
               </div>
               <div ng-show="(currentAuction.sellerID !== account.profile.$id)">
-
                 <div ng-show="account.profile.$id !== currentAuction.bidderID">
                   <div ng-show="(account.profile.balance >= currentAuction.winningBid) && (currentAuction.timeLeft > 0)">
                     <form id="placeBid" name="forms.placeBid" novalidate="" ng-submit="submit()">
@@ -150,7 +149,12 @@
                   </div>
                 </div>
                 <div ng-show="account.profile.$id === currentAuction.bidderID">
-                  <p  class="bg-info" style="padding: 10px;">You are winning the auction!</p>
+                  <div ng-show="currentAuction.timeLeft === 0">
+                    <i class="fa fa-trophy" aria-hidden="true"></i> You won the auction! : {{currentAuction.winningBidderDetails.names}}
+                  </div>
+                  <div ng-show="currentAuction.timeLeft > 0">
+                    <p  class="bg-info" style="padding: 10px;">You are winning the auction!</p>
+                  </div>
                 </div>
               </div>
               <div ng-show="currentAuction.sellerID === account.profile.$id">

@@ -1,8 +1,8 @@
 # RTMG - Auction System
 
-<b>Online Demo:</b> https://rtmg-auction-system.herokuapp.com/
+##### Online Demo: https://rtmg-auction-system.herokuapp.com/
 
-<b>Youtube Video:</b>
+##### Youtube Video:
  
 ## Local deploy
 

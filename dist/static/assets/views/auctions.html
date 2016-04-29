@@ -1,0 +1,70 @@
+<div class="container" style="margin-top: 17px"><div ng-show="!lording.isDone" cg-busy="{promise:lording.promise, message:'Just a moment'}"><div><div class="panel panel-default loading-background" style="height: 600px"><div class="panel-body"></div></div></div></div><div ng-show="lording.isDone"><div class="panel panel-default"><div class="panel-heading">Player Stats | <a ng-click="logout()" style="cursor: pointer; color: red"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a></div><ul class="list-group"><li class="list-group-item"><b>Name:</b> {{account.profile.names}}</li><li class="list-group-item"><b>Coins:</b> {{account.profile.balance}}</li></ul></div><div class="row"><div class="col-xs-6"><div class="panel panel-default"><div class="panel-heading">Inventory</div><ul class="list-group" ng-show="account.inventory.length > 0"><li class="list-group-item" ng-repeat="item in account.inventory"><div class="row"><div class="col-xs-4 text-center"><div><img ng-src="static/assets/images/{{item.$id}}.png" alt="..." width="100" height="100" class="img-thumbnail"></div><div>{{item.$id | capitalize}}</div></div><div class="col-xs-4 text-center"><div>Quantity</div><div><div><b>{{item.$value}} Units</b></div><div ng-show="account.compromisedInventory[item.$id] !== undefined"><b>{{account.compromisedInventory[item.$id]}} Units compromised</b></div></div></div><div class="col-xs-4 text-center"><div ng-show="item.$value > 0"><div style="margin-bottom: 10px"><img ng-src="static/assets/images/megaphone.png" alt="..." width="50" height="50" class="img-circle"></div><div><button type="button" class="btn btn-primary" ng-click="auction(item, account.compromisedInventory[item.$id])">Auction</button></div></div></div></div></li></ul><ul class="list-group" ng-show="account.inventory.length === 0"><li class="list-group-item text-center"><b>The inventory is empty</b></li></ul></div></div><div class="col-xs-6"><div class="panel panel-default"><div class="panel-heading">Current Auction</div><div class="panel-body"><div ng-show="currentAuction.$value === null"><p class="bg-info" style="padding: 10px">No auction at the moment.</p></div><div ng-show="currentAuction.$value !== null"><div>Seller: <b>{{currentAuction.sellerDetails.names}}</b><hr class="hr-xs"></div><div><div class="row"><div class="col-xs-6 text-center"><div><img ng-src="static/assets/images/{{currentAuction.itemDetails.name}}.png" alt="{{currentAuction.itemDetails.name}}" width="100" height="100" class="img-thumbnail"></div><div>{{currentAuction.itemDetails.name | capitalize}}</div></div><div class="col-xs-6"><div>Quantity</div><div><div><b>{{currentAuction.quantityAuctioned}} Units</b></div></div></div></div><hr class="hr-xs"></div><div>Time left: <b>{{currentAuction.timeLeft}}</b><hr class="hr-xs"></div><div><div ng-show="currentAuction.bidderID === ''">Minimum bid: <b>{{currentAuction.minimumBid}}</b></div><div ng-show="currentAuction.bidderID !== ''"><div class="row"><div class="col-xs-6">Winning bid: <b>{{currentAuction.winningBid}} Coins</b></div><div class="col-xs-6">Winning Bidder: <b>{{currentAuction.winningBidderDetails.names}}</b></div></div></div><hr class="hr-xs"></div><div ng-show="(currentAuction.sellerID !== account.profile.$id)"><div ng-show="account.profile.$id !== currentAuction.bidderID"><div ng-show="(account.profile.balance >= currentAuction.winningBid) && (currentAuction.timeLeft > 0)"><form id="placeBid" name="forms.placeBid" novalidate="" ng-submit="submit()"><div class="form-group" ng-class="{'has-success has-feedback': (forms.placeBid.$submitted && forms.placeBid.quantityAuctioned.$valid),'has-error has-feedback': (forms.placeBid.$submitted && forms.placeBid.quantityAuctioned.$invalid) }"><input type="number" name="bid" ng-model="model.bid" required min="{{(currentAuction.bidderID !== '')? (currentAuction.winningBid+1) : (currentAuction.minimumBid)}}" max="{{account.profile.balance}}" integer class="form-control" placeholder=""> <span ng-show="forms.placeBid.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.placeBid.quantityAuctioned.$valid),'glyphicon-remove': ( forms.placeBid.quantityAuctioned.$invalid) }" aria-hidden="true"></span><div data-ng-messages="forms.placeBid.$submitted && forms.placeBid.bid.$error" class="help-block"><div data-ng-message="required">- The <b>coins quantity</b> is required.</div><div data-ng-message="max">- The <b>coins quantity</b> must be less than or equal to the your profile balance available.</div><div data-ng-message="min">- The <b>coins quantity</b> should not be minor that the minimum bid.</div><div data-ng-message="integer">- The <b>coins quantity</b> should be a integer number.</div></div></div></form><div><button form="placeBid" class="btn btn-primary" type="submit"><i class="fa fa-money" aria-hidden="true"></i> Place Bid</button></div></div><div ng-show="(account.profile.balance <= currentAuction.winningBid)"><p class="bg-info" style="padding: 10px">You don't have enough coins to bid</p></div><div ng-show="currentAuction.timeLeft === 0"><p class="bg-info" style="padding: 10px">The auction is over.</p></div></div><div ng-show="account.profile.$id === currentAuction.bidderID"><p class="bg-info" style="padding: 10px">You are winning the auction!</p></div></div><div ng-show="currentAuction.sellerID === account.profile.$id"><div ng-show="currentAuction.bidderID === ''"><div ng-show="currentAuction.timeLeft === 0"><p class="bg-info" style="padding: 10px">No offers.</p></div><div ng-show="currentAuction.timeLeft > 0"><p class="bg-info" style="padding: 10px">No offers yet.</p></div></div><div ng-show="(currentAuction.bidderID !== '') && (currentAuction.timeLeft > 0)"><p class="bg-info" style="padding: 10px">Current winner at the moment: {{currentAuction.winningBidderDetails.names}}</p></div><div ng-show="(currentAuction.bidderID !== '') && (currentAuction.timeLeft === 0)"><p class="bg-info" style="padding: 10px"><i class="fa fa-trophy" aria-hidden="true"></i> Winner! : {{currentAuction.winningBidderDetails.names}}</p></div><div ng-show="currentAuction.timeLeft === 0"><p class="bg-info" style="padding: 10px">The auction is over.</p></div></div></div></div></div></div></div><div class="panel panel-default"><div class="panel-heading">Your Queued Auctions</div><ul class="list-group" ng-show="account.queuedAuctions.length > 0"><li class="list-group-item" ng-repeat="queuedAuction in account.queuedAuctions"><div class="row"><div class="col-xs-4 text-center"><div><img ng-src="static/assets/images/{{queuedAuction.itemDetails.name}}.png" alt="..." width="100" height="100" class="img-thumbnail"></div><div>{{queuedAuction.itemDetails.name | capitalize}}</div></div><div class="col-xs-4 text-center"><div>Quantity Auctioned</div><div><b>{{queuedAuction.quantityAuctioned}} Units</b></div><div>Minimum Bid</div><div><b>{{queuedAuction.minimumBid}} Coins</b></div></div><div class="col-xs-4 text-center">Since: {{queuedAuction.startedAt | date:'dd'}} / {{queuedAuction.startedAt | date:'MM'}} / {{queuedAuction.startedAt | date:'yy'}} - {{queuedAuction.startedAt | date:'hh'}}:{{queuedAuction.startedAt | date:'mm'}}:{{queuedAuction.startedAt | date:'ss'}} {{queuedAuction.startedAt | date:'a'}}</div></div></li></ul><ul class="list-group" ng-show="account.queuedAuctions.length === 0"><li class="list-group-item text-center"><b>Not queued auctions yet</b></li></ul></div></div></div><script type="text/ng-template" id="auctionModal.html"><div class="modal-header">
+    <h3 class="modal-title">Start your auction</h3>
+  </div>
+  <div class="modal-body" cg-busy="{promise:httpRequestPromise,message:'Just a moment'}">
+
+    <div class="text-center">
+      <div>
+        <img ng-src="static/assets/images/{{item.$id}}.png" alt="..." width="100" height="100" class="img-thumbnail">
+      </div>
+      <div>
+        {{item.$id | capitalize}}
+      </div>
+      <div>
+        <div>
+          <b>{{item.$value}}</b> Units available
+        </div>
+        <div>
+          <div ng-show="compromisedInventory !== undefined"><b>{{compromisedInventory}} Units compromised</b></div>
+        </div>
+      </div>
+    </div>
+
+    <form id="auctionDetails" name="forms.auctionDetails" novalidate="" ng-submit="submit()">
+
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.auctionDetails.$submitted && forms.auctionDetails.quantityAuctioned.$valid),'has-error has-feedback': (forms.auctionDetails.$submitted && forms.auctionDetails.quantityAuctioned.$invalid) }">
+        <label class="control-label"><i class="fa fa-cubes" aria-hidden="true"></i> Quantity to be auctioned</label>
+        <input type="number" name="quantityAuctioned" ng-model="model.quantityAuctioned" required min="1" max="{{item.$value-compromisedInventory}}" integer class="form-control" placeholder="">
+        <span ng-show="forms.auctionDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.auctionDetails.quantityAuctioned.$valid),'glyphicon-remove': ( forms.auctionDetails.quantityAuctioned.$invalid) }" aria-hidden="true"></span>
+        <div data-ng-messages="forms.auctionDetails.$submitted && forms.auctionDetails.quantityAuctioned.$error" class="help-block">
+          <div data-ng-message="required">
+            - The <b>quantity</b> is required.
+          </div>
+          <div data-ng-message="max">
+            - The <b>quantity</b> must be less than or equal to the quantity available.
+          </div>
+          <div data-ng-message="min">
+            - The <b>quantity</b> should not be a negative number.
+          </div>
+          <div data-ng-message="integer">
+            - The <b>quantity</b> should be a integer number.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{'has-success has-feedback': (forms.auctionDetails.$submitted && forms.auctionDetails.minimumBid.$valid),'has-error has-feedback': (forms.auctionDetails.$submitted && forms.auctionDetails.minimumBid.$invalid) }">
+        <label class="control-label"><i class="fa fa-gavel" aria-hidden="true"></i> Minimum bid</label>
+        <input type="number" name="minimumBid" ng-model="model.minimumBid" required min="0" integer class="form-control" placeholder="">
+        <span ng-show="forms.auctionDetails.$submitted" class="glyphicon form-control-feedback" ng-class="{'glyphicon-ok': (forms.auctionDetails.minimumBid.$valid),'glyphicon-remove': ( forms.auctionDetails.minimumBid.$invalid) }" aria-hidden="true"></span>
+        <div data-ng-messages="forms.auctionDetails.$submitted && forms.auctionDetails.minimumBid.$error" class="help-block">
+          <div data-ng-message="required">
+            - The <b>minimum bid</b> is required.
+          </div>
+          <div data-ng-message="min">
+            - The <b>quantity</b> should not be a negative number.
+          </div>
+          <div data-ng-message="integer">
+            - The <b>minimum bid</b> should be a integer number.
+          </div>
+        </div>
+      </div>
+      
+    </form>
+
+    <div class="alert alert-info alert-xs" style="margin-bottom: 0; margin-top: 10px; " role="alert">NOTE: This superscript <sup style="color: red;">*</sup> mean that, input field is required.</div>
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    <button form="auctionDetails" class="btn btn-primary" type="submit">Start Auction</button>
+  </div></script>

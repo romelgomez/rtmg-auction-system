@@ -150,7 +150,7 @@
                 </div>
                 <div ng-show="account.profile.$id === currentAuction.bidderID">
                   <div ng-show="currentAuction.timeLeft === 0">
-                    <i class="fa fa-trophy" aria-hidden="true"></i> You won the auction! : {{currentAuction.winningBidderDetails.names}}
+                    <p  class="bg-info" style="padding: 10px;"><i class="fa fa-trophy" aria-hidden="true"></i> You won the auction!: {{currentAuction.winningBidderDetails.names}}</p>
                   </div>
                   <div ng-show="currentAuction.timeLeft > 0">
                     <p  class="bg-info" style="padding: 10px;">You are winning the auction!</p>

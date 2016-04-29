@@ -25,6 +25,7 @@ Build for production
 AngularJS
 
 - [/public/static/assets/scripts/auctions.js](/public/static/assets/scripts/auctions.js) 
+- [/public/static/assets/views/auctions.html](/public/static/assets/views/auctions.html)
 
 Node
 

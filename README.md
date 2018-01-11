@@ -5,6 +5,8 @@
 #### Online Demo: https://rtmg-auction-system.herokuapp.com/
 
 #### Unlisted Youtube Video: https://youtu.be/LYxXhlHdP2w
+
+#### test requirements: https://docs.google.com/document/d/1tY1ISFtTVFmmHfYmysQCfcOhDA2yqBM1gbq7cTmpkW0/edit?usp=sharing
  
 ## Local deploy
 
